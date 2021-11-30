@@ -18,8 +18,15 @@
                     var match = regEx.Match(html);
                     if (match.Success)
                     {
-                        fileURL = match.Groups[1].Value.Replace("\\u002F", "/");
+                        fileURL = System.Text.RegularExpressions.Regex.Unescape(match.Groups[1].Value);
                         var fileContent = await GetFileContentAsync(fileURL);
+                        switch (fileType)
+                        {
+                            case FILETYPE.json:
+                                fileContent = System.Text.RegularExpressions.Regex.Unescape(fileContent);
+                                break;
+                        }
+
                         return (true, fileContent);
                     }
                     else
@@ -28,7 +35,7 @@
                     }
                 }
             }
-            catch 
+            catch
             {
                 throw;
             }
